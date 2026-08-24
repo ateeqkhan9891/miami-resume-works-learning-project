@@ -1,8 +1,8 @@
+// middleware.ts (or src/middleware.ts)
 import { type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/proxy"; // (or update path as needed)
 
-import { updateSession } from "@/lib/supabase/proxy";
-
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   return await updateSession(request);
 }
 

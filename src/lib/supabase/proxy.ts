@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr";
-
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -15,7 +14,6 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
@@ -33,22 +31,28 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const { data, error } = await supabase.auth.getClaims();
+  // IMPORTANT: getUser() securely verifies the auth state with Supabase servers
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (error) {
-    console.error("Supabase getClaims error:", error);
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  const isAuthRoute =
+    request.nextUrl.pathname.startsWith("/login") ||
+    request.nextUrl.pathname.startsWith("/signup");
+
+  // 1. If unauthenticated user tries to access /dashboard, redirect to /login
+  if (isDashboardRoute && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirectedFrom", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
   }
 
-  const claims = data?.claims;
-
-  const isDashboardRoute =
-    request.nextUrl.pathname.startsWith("/dashboard");
-
-  if (isDashboardRoute && !claims) {
+  // 2. If authenticated user visits /login or /signup, redirect to /dashboard
+  if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-
-    url.pathname = "/login";
-
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
