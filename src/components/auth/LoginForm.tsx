@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {supabase} from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import {useRouter} from "next/navigation";
 
 
@@ -31,6 +31,8 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage,setErrorMessage] = useState("");
 
+  const supabase = createClient();
+
   const {
     register,handleSubmit,formState: {errors,isSubmitting},} = 
     useForm<LoginFormData>({resolver: zodResolver(loginSchema),
@@ -41,26 +43,21 @@ export default function LoginForm() {
     });
 
     const router = useRouter();
-   const onSubmit = async (data: LoginFormData) => {
-      setErrorMessage("");
+    const onSubmit = async (data: LoginFormData) => {
+    setErrorMessage("");
 
-      const { data: authData, error } =
-        await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.password,
-        });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-      console.log("EMAIL:", data.email);
-      console.log("AUTH DATA:", authData);
-      console.log("AUTH ERROR:", error);
-
-      if (error) {
-        setErrorMessage("Invalid email or password.");
-        return;
-      }
-
-      router.push("/dashboard");
-    };
+    if (error) {
+      setErrorMessage("Invalid email or password.");
+      return;
+    }
+    console.log("LOGIN SUCCESS — REDIRECTING");
+    router.push("/dashboard");
+  };
 
 
 

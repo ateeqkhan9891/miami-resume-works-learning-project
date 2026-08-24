@@ -1,8 +1,12 @@
-import { h1 } from "motion/react-client";
+import SignUp from "@/components/auth/SignupForm";
 
 
 export default function Signup(){
     return(
-        <h1>Signup page</h1>
+        <>
+
+        <SignUp />
+        
+        </>
     )
 }
