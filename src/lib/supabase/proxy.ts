@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -32,7 +33,24 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getClaims();
+  const { data, error } = await supabase.auth.getClaims();
+
+  if (error) {
+    console.error("Supabase getClaims error:", error);
+  }
+
+  const claims = data?.claims;
+
+  const isDashboardRoute =
+    request.nextUrl.pathname.startsWith("/dashboard");
+
+  if (isDashboardRoute && !claims) {
+    const url = request.nextUrl.clone();
+
+    url.pathname = "/login";
+
+    return NextResponse.redirect(url);
+  }
 
   return response;
 }

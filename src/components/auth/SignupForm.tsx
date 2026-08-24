@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import {useRouter} from "next/navigation";
 import Link from "next/link";
 import { 
   Eye, 
@@ -34,6 +35,7 @@ import { Label } from "@/components/ui/label";
 
 export default function SignUp() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -89,6 +91,14 @@ export default function SignUp() {
       setSuccessMessage(
         "Account created successfully. Please check your email to verify your account."
       );
+
+      setTimeout(() => {
+        router.push("/login");
+        router.refresh();
+      }, 2000);
+
+      
+
     } catch (err: any) {
       setErrorMessage(err.message || "An unexpected error occurred.");
     } finally {
