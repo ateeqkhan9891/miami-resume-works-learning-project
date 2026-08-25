@@ -93,7 +93,7 @@ export default function LoginForm() {
           </CardHeader>
 
           <CardContent className="p-6 sm:p-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
               {/* Email */}
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-slate-700">

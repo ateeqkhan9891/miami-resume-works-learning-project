@@ -31,7 +31,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: getUser() securely verifies the auth state with Supabase servers
+  
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -41,7 +41,7 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/signup");
 
-  // 1. If unauthenticated user tries to access /dashboard, redirect to /login
+  // na bachaiaaaa - wapas shaaa
   if (isDashboardRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
@@ -49,7 +49,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 2. If authenticated user visits /login or /signup, redirect to /dashboard
+ 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
